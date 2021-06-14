@@ -230,3 +230,64 @@ void atbash(int status) {
 		cout << endl << uncrypt << endl;
 	}
 }
+
+void gronsfeld(int status) {
+	if (status == 1) {
+		cout << "Введите текст для шифрования\n";
+		string text = "";
+		cin.ignore();
+		getline(cin, text);
+		cout << "Введите ключ из чисел\n";
+		int keyInt;
+		cin >> keyInt;
+		vector <int> key;
+		while (keyInt != 0) {
+			key.push_back(keyInt%10);
+			keyInt /= 10;
+		}
+		reverse(key.begin(),key.end());
+		string crypt = "";
+		for (int i = 0; i<text.length(); i++) {
+			if (text[i] == ' ') {
+				crypt.push_back(' ');
+				continue;
+			}
+			crypt.push_back(text[i]+key[i%key.size()]);
+		}
+		string str = "";
+		ofstream file;
+		file.open("Gronsfeld.txt");
+		file << crypt << endl;
+		for (int i : key) {
+			file << i;
+		}
+		file.close();
+	}
+	if (status == 2) {
+		//Расшифровка
+		string str = "";
+		string uncrypt = "";
+		vector<int> key;
+		string keyStr;
+		int keyInt;
+		ifstream fileIn;
+		fileIn.open("Gronsfeld.txt");
+		getline(fileIn, str);
+		getline(fileIn, keyStr);
+		fileIn.close();
+		keyInt = std::stoi(keyStr);
+		while (keyInt != 0) {
+			key.push_back(keyInt % 10);
+			keyInt /= 10;
+		}
+		reverse(key.begin(),key.end());
+		for (int i = 0; i < str.length(); i++) {
+			if (str[i] == ' ') {
+				uncrypt.push_back(' ');
+				continue;
+			}
+			uncrypt.push_back(str[i] - key[i % key.size()]);
+		}
+		cout << endl << uncrypt << endl;
+	}
+}
